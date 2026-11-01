@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Homework: Countries & Nationalities</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #2c3e50;
+            line-height: 1.7;
+            margin: 0;
+            padding: 20px;
+            font-size: 18px;
+        }
+        h1, h2, h3 {
+            font-family: 'Fredoka', sans-serif;
+            letter-spacing: 1px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            border-top: 10px solid #ff9a9e;
+        }
+        h1 {
+            color: #e74c3c;
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 2.5em;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 1.2em;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+        
+        /* Картинки */
+        .hero-img {
+            width: 100%;
+            max-height: 250px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Блоки заданий */
+        .task {
+            background: #fdfbf7;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 35px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-left: 8px solid #3498db;
+            position: relative;
+        }
+        .task h3 { 
+            margin-top: 0; 
+            color: #2980b9; 
+            font-size: 1.4em; 
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Кнопки выбора */
+        .choice-btn {
+            background-color: #fff;
+            color: #333;
+            border: 2px solid #bdc3c7;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: 'Nunito', sans-serif;
+            margin: 5px;
+            transition: 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .choice-btn:hover { background-color: #ecf0f1; }
+        .choice-btn.correct { background-color: #d5f5e3; border-color: #27ae60; color: #27ae60; font-weight: bold; }
+        .choice-btn.wrong { background-color: #fadbd8; border-color: #e74c3c; color: #e74c3c; }
+        
+        /* Поля ввода */
+        input[type="text"] {
+            width: 200px;
+            padding: 8px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Nunito', sans-serif;
+            text-align: center;
+            outline: none;
+            transition: 0.2s;
+        }
+        input[type="text"]:focus { border-color: #3498db; box-shadow: 0 0 5px rgba(52,152,219,0.5); }
+        input[type="text"].input-correct { border-color: #27ae60; background-color: #d5f5e3; }
+        input[type="text"].input-wrong { border-color: #e74c3c; background-color: #fadbd8; }
+        
+        select {
+            font-size: 16px;
+            padding: 6px;
+            border-radius: 8px;
+            border: 2px solid #bdc3c7;
+            font-family: 'Nunito', sans-serif;
+            outline: none;
+        }
+        select.select-correct { border-color: #27ae60; background-color: #d5f5e3; }
+        select.select-wrong { border-color: #e74c3c; background-color: #fadbd8; }
+
+        /* Игра на соединение (Match) */
+        .match-container { display: flex; gap: 20px; justify-content: space-between; margin-top: 15px; }
+        .match-col { display: flex; flex-direction: column; gap: 10px; width: 48%; }
+        .match-item {
+            background: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #bdc3c7;
+            cursor: pointer;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: 0.2s;
+            user-select: none;
+        }
+        .match-item:hover { background: #f8f9fa; }
+        .match-item.selected { background: #f1c40f; color: #fff; border-color: #f39c12; }
+        .match-item.matched { background: #d5f5e3; color: #27ae60; border-color: #27ae60; cursor: default; }
+        .match-item.error { background: #fadbd8; border-color: #e74c3c; color: #e74c3c; }
+
+        /* Кликабельные слова (Unscramble) */
+        .word-bank, .sentence-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 45px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px dashed #bdc3c7;
+            background: #f8f9fa;
+            margin-bottom: 10px;
+        }
+        .sentence-area { border: 2px solid #e67e22; background: #fdf2e9; }
+        .sentence-area.area-correct { border-color: #27ae60; background: #d5f5e3; }
+        .sentence-area.area-wrong { border-color: #e74c3c; background: #fadbd8; }
+        .word-chip {
+            background: #e67e22;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            user-select: none;
+            transition: 0.2s;
+        }
+        .word-chip:hover { background: #d35400; transform: translateY(-2px); }
+        .word-chip.placed { background: #3498db; }
+
+        /* Аудио кнопки */
+        .audio-btn {
+            background: #9b59b6;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 3px 0 #8e44ad;
+            transition: 0.2s;
+            vertical-align: middle;
+        }
+        .audio-btn:active { transform: translateY(3px); box-shadow: none; }
+
+        /* Кнопки проверки (Check Answers) */
+        .check-btn {
+            background: #f39c12;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            font-family: 'Nunito', sans-serif;
+            box-shadow: 0 3px 0 #d68910;
+            transition: 0.1s;
+            margin-top: 15px;
+            margin-right: 10px;
+        }
+        .check-btn:active { transform: translateY(3px); box-shadow: none; }
+        .result-msg { font-weight: bold; font-size: 1.1em; }
+
+        /* Submit Button */
+        .submit-btn {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #c0392b;
+            transition: 0.1s;
+            font-family: 'Fredoka', sans-serif;
+            margin-top: 20px;
+        }
+        .submit-btn:hover { background: #c0392b; }
+        .submit-btn:active { transform: translateY(5px); box-shadow: none; }
+
+        .icon { font-size: 1.3em; margin-left: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🌍 World Travel Homework ✈️</h1>
+    <div class="subtitle">Complete all 11 tasks and click Submit at the bottom!</div>
+    
+    <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1000&q=80" class="hero-img" alt="Travel the world">
+
+    <form action="https://formspree.io/f/xljjlgjb" method="POST">
+        
+        <!-- ================= TASK 1 ================= -->
+        <div class="task" style="border-left-color: #3498db;">
+            <h3>1. Choose the correct form of "to be" (am / is / are)</h3>
+            <input type="hidden" name="Task1_1" id="in_t1_1"><input type="hidden" name="Task1_2" id="in_t1_2"><input type="hidden" name="Task1_3" id="in_t1_3"><input type="hidden" name="Task1_4" id="in_t1_4"><input type="hidden" name="Task1_5" id="in_t1_5"><input type="hidden" name="Task1_6" id="in_t1_6"><input type="hidden" name="Task1_7" id="in_t1_7">
+            
+            <p>1. I <span id="span1_1">___</span> from Italy. <span class="icon">🍕</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t1_1','am',this)">am</button><button type="button" class="choice-btn" onclick="checkChoice('t1_1','is',this)">is</button><button type="button" class="choice-btn" onclick="checkChoice('t1_1','are',this)">are</button></p>
+
+            <p>2. You <span id="span1_2">___</span> from Canada. <span class="icon">🍁</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t1_2','am',this)">am</button><button type="button" class="choice-btn" onclick="checkChoice('t1_2','is',this)">is</button><button type="button" class="choice-btn" onclick="checkChoice('t1_2','are',this)">are</button></p>
+
+            <p>3. He <span id="span1_3">___</span> British. <span class="icon">👑</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t1_3','am',this)">am</button><button type="button" class="choice-btn" onclick="checkChoice('t1_3','is',this)">is</button><button type="button" class="choice-btn" onclick="checkChoice('t1_3','are',this)">are</button></p>
+
+            <p>4. She <span id="span1_4">___</span> Spanish. <span class="icon">💃</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t1_4','am',this)">am</button><button type="button" class="choice-btn" onclick="checkChoice('t1_4','is',this)">is</button><button type="button" class="choice-btn" onclick="checkChoice('t1_4','are',this)">are</button></p>
+
+            <p>5. It <span id="span1_5">___</span> a costume. <span class="icon">👕</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t1_5','am',this)">am</button><button type="button" class="choice-btn" onclick="checkChoice('t1_5','is',this)">is</button><button type="button" class="choice-btn" onclick="checkChoice('t1_5','are',this)">are</button></p>
+
+            <p>6. Dipper <span id="span1_6">___</span> American. <span class="icon">🗽</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t1_6','am',this)">am</button><button type="button" class="choice-btn" onclick="checkChoice('t1_6','is',this)">is</button><button type="button" class="choice-btn" onclick="checkChoice('t1_6','are',this)">are</button></p>
+
+            <p>7. You <span id="span1_7">___</span> students. <span class="icon">🎒</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t1_7','am',this)">am</button><button type="button" class="choice-btn" onclick="checkChoice('t1_7','is',this)">is</button><button type="button" class="choice-btn" onclick="checkChoice('t1_7','are',this)">are</button></p>
+            
+            <button type="button" class="check-btn" onclick="checkTask1()">Check Task 1</button>
+            <span id="res1" class="result-msg"></span>
+        </div>
+
+        <!-- ================= TASK 2 ================= -->
+        <div class="task" style="border-left-color: #e74c3c;">
+            <h3>2. Choose the negative form (am not / isn't / aren't)</h3>
+            <input type="hidden" name="Task2_1" id="in_t2_1"><input type="hidden" name="Task2_2" id="in_t2_2"><input type="hidden" name="Task2_3" id="in_t2_3"><input type="hidden" name="Task2_4" id="in_t2_4"><input type="hidden" name="Task2_5" id="in_t2_5"><input type="hidden" name="Task2_6" id="in_t2_6"><input type="hidden" name="Task2_7" id="in_t2_7">
+
+            <p>1. I <span id="span2_1">___</span> from France. <span class="icon">🥖</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t2_1','am not',this)">am not</button><button type="button" class="choice-btn" onclick="checkChoice('t2_1','isn\'t',this)">isn't</button><button type="button" class="choice-btn" onclick="checkChoice('t2_1','aren\'t',this)">aren't</button></p>
+
+            <p>2. You <span id="span2_2">___</span> British. <span class="icon">👑</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t2_2','am not',this)">am not</button><button type="button" class="choice-btn" onclick="checkChoice('t2_2','isn\'t',this)">isn't</button><button type="button" class="choice-btn" onclick="checkChoice('t2_2','aren\'t',this)">aren't</button></p>
+
+            <p>3. He <span id="span2_3">___</span> Mexican. <span class="icon">🌮</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t2_3','am not',this)">am not</button><button type="button" class="choice-btn" onclick="checkChoice('t2_3','isn\'t',this)">isn't</button><button type="button" class="choice-btn" onclick="checkChoice('t2_3','aren\'t',this)">aren't</button></p>
+
+            <p>4. She <span id="span2_4">___</span> Japanese. <span class="icon">🍣</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t2_4','am not',this)">am not</button><button type="button" class="choice-btn" onclick="checkChoice('t2_4','isn\'t',this)">isn't</button><button type="button" class="choice-btn" onclick="checkChoice('t2_4','aren\'t',this)">aren't</button></p>
+
+            <p>5. It <span id="span2_5">___</span> a monster. <span class="icon">👹</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t2_5','am not',this)">am not</button><button type="button" class="choice-btn" onclick="checkChoice('t2_5','isn\'t',this)">isn't</button><button type="button" class="choice-btn" onclick="checkChoice('t2_5','aren\'t',this)">aren't</button></p>
+
+            <p>6. You <span id="span2_6">___</span> from Brazil. <span class="icon">⚽</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t2_6','am not',this)">am not</button><button type="button" class="choice-btn" onclick="checkChoice('t2_6','isn\'t',this)">isn't</button><button type="button" class="choice-btn" onclick="checkChoice('t2_6','aren\'t',this)">aren't</button></p>
+
+            <p>7. I <span id="span2_7">___</span> a tourist. <span class="icon">🧳</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t2_7','am not',this)">am not</button><button type="button" class="choice-btn" onclick="checkChoice('t2_7','isn\'t',this)">isn't</button><button type="button" class="choice-btn" onclick="checkChoice('t2_7','aren\'t',this)">aren't</button></p>
+            
+            <button type="button" class="check-btn" onclick="checkTask2()">Check Task 2</button>
+            <span id="res2" class="result-msg"></span>
+        </div>
+
+        <!-- ================= TASK 3 ================= -->
+        <div class="task" style="border-left-color: #f39c12;">
+            <h3>3. Choose the correct question word (Am / Is / Are)</h3>
+            <input type="hidden" name="Task3_1" id="in_t3_1"><input type="hidden" name="Task3_2" id="in_t3_2"><input type="hidden" name="Task3_3" id="in_t3_3"><input type="hidden" name="Task3_4" id="in_t3_4"><input type="hidden" name="Task3_5" id="in_t3_5"><input type="hidden" name="Task3_6" id="in_t3_6"><input type="hidden" name="Task3_7" id="in_t3_7">
+
+            <p>1. <span id="span3_1">___</span> you from Germany? <span class="icon">🥨</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t3_1','Am',this)">Am</button><button type="button" class="choice-btn" onclick="checkChoice('t3_1','Is',this)">Is</button><button type="button" class="choice-btn" onclick="checkChoice('t3_1','Are',this)">Are</button></p>
+
+            <p>2. <span id="span3_2">___</span> he Italian? <span class="icon">🍕</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t3_2','Am',this)">Am</button><button type="button" class="choice-btn" onclick="checkChoice('t3_2','Is',this)">Is</button><button type="button" class="choice-btn" onclick="checkChoice('t3_2','Are',this)">Are</button></p>
+
+            <p>3. <span id="span3_3">___</span> she a student? <span class="icon">🎓</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t3_3','Am',this)">Am</button><button type="button" class="choice-btn" onclick="checkChoice('t3_3','Is',this)">Is</button><button type="button" class="choice-btn" onclick="checkChoice('t3_3','Are',this)">Are</button></p>
+
+            <p>4. <span id="span3_4">___</span> I late? <span class="icon">⏰</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t3_4','Am',this)">Am</button><button type="button" class="choice-btn" onclick="checkChoice('t3_4','Is',this)">Is</button><button type="button" class="choice-btn" onclick="checkChoice('t3_4','Are',this)">Are</button></p>
+
+            <p>5. <span id="span3_5">___</span> it a mask? <span class="icon">🎭</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t3_5','Am',this)">Am</button><button type="button" class="choice-btn" onclick="checkChoice('t3_5','Is',this)">Is</button><button type="button" class="choice-btn" onclick="checkChoice('t3_5','Are',this)">Are</button></p>
+
+            <p>6. <span id="span3_6">___</span> you British? <span class="icon">👑</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t3_6','Am',this)">Am</button><button type="button" class="choice-btn" onclick="checkChoice('t3_6','Is',this)">Is</button><button type="button" class="choice-btn" onclick="checkChoice('t3_6','Are',this)">Are</button></p>
+
+            <p>7. <span id="span3_7">___</span> Dipper from the USA? <span class="icon">🗽</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t3_7','Am',this)">Am</button><button type="button" class="choice-btn" onclick="checkChoice('t3_7','Is',this)">Is</button><button type="button" class="choice-btn" onclick="checkChoice('t3_7','Are',this)">Are</button></p>
+            
+            <button type="button" class="check-btn" onclick="checkTask3()">Check Task 3</button>
+            <span id="res3" class="result-msg"></span>
+        </div>
+
+        <!-- ================= TASK 4 ================= -->
+        <div class="task" style="border-left-color: #9b59b6;">
+            <h3>4. Write the short form (Type the word)</h3>
+            <p><i>Example: I am ➔ I'm</i></p>
+            <p>1. I am ➔ <input type="text" name="Task4_1" id="q4_1" placeholder="..."> ✍️</p>
+            <p>2. You are ➔ <input type="text" name="Task4_2" id="q4_2" placeholder="..."> ✍️</p>
+            <p>3. He is ➔ <input type="text" name="Task4_3" id="q4_3" placeholder="..."> ✍️</p>
+            <p>4. She is not ➔ <input type="text" name="Task4_4" id="q4_4" placeholder="..."> ✍️</p>
+            <p>5. It is ➔ <input type="text" name="Task4_5" id="q4_5" placeholder="..."> ✍️</p>
+            <p>6. You are not ➔ <input type="text" name="Task4_6" id="q4_6" placeholder="..."> ✍️</p>
+            <p>7. I am not ➔ <input type="text" name="Task4_7" id="q4_7" placeholder="..."> ✍️</p>
+            
+            <button type="button" class="check-btn" onclick="checkTask4()">Check Task 4</button>
+            <span id="res4" class="result-msg"></span>
+        </div>
+
+        <!-- ================= TASK 5 ================= -->
+        <div class="task" style="border-left-color: #1abc9c;">
+            <h3>5. Match the country with the nationality</h3>
+            <p>Click a country, then click the nationality.</p>
+            <div class="match-container">
+                <div class="match-col" id="col-left-5">
+                    <div class="match-item" data-id="1" onclick="selectItem5(this, 'left')">France</div>
+                    <div class="match-item" data-id="2" onclick="selectItem5(this, 'left')">Italy</div>
+                    <div class="match-item" data-id="3" onclick="selectItem5(this, 'left')">Japan</div>
+                    <div class="match-item" data-id="4" onclick="selectItem5(this, 'left')">Spain</div>
+                    <div class="match-item" data-id="5" onclick="selectItem5(this, 'left')">Britain</div>
+                    <div class="match-item" data-id="6" onclick="selectItem5(this, 'left')">Mexico</div>
+                    <div class="match-item" data-id="7" onclick="selectItem5(this, 'left')">America</div>
+                </div>
+                <div class="match-col" id="col-right-5">
+                    <div class="match-item" data-id="3" onclick="selectItem5(this, 'right')">Japanese</div>
+                    <div class="match-item" data-id="7" onclick="selectItem5(this, 'right')">American</div>
+                    <div class="match-item" data-id="1" onclick="selectItem5(this, 'right')">French</div>
+                    <div class="match-item" data-id="5" onclick="selectItem5(this, 'right')">British</div>
+                    <div class="match-item" data-id="2" onclick="selectItem5(this, 'right')">Italian</div>
+                    <div class="match-item" data-id="6" onclick="selectItem5(this, 'right')">Mexican</div>
+                    <div class="match-item" data-id="4" onclick="selectItem5(this, 'right')">Spanish</div>
+                </div>
+            </div>
+            <input type="hidden" name="Task5_Match" id="in_t5" value="">
+            
+            <button type="button" class="check-btn" onclick="checkTask5()">Check Task 5</button>
+            <span id="res5" class="result-msg"></span>
+        </div>
+
+        <!-- ================= TASK 6 ================= -->
+        <div class="task" style="border-left-color: #e67e22;">
+            <h3>6. Type the correct pronoun (I, you, he, she, it)</h3>
+            <p>1. <input type="text" name="Task6_1" id="q6_1" placeholder="..."> am from Italy. <span class="icon">🍕</span></p>
+            <p>2. <input type="text" name="Task6_2" id="q6_2" placeholder="..."> is from London. (Boy) <span class="icon">👑</span></p>
+            <p>3. <input type="text" name="Task6_3" id="q6_3" placeholder="..."> are from Japan. <span class="icon">🍣</span></p>
+            <p>4. <input type="text" name="Task6_4" id="q6_4" placeholder="..."> is a country. <span class="icon">🌍</span></p>
+            <p>5. <input type="text" name="Task6_5" id="q6_5" placeholder="..."> am not French. <span class="icon">🥖</span></p>
+            <p>6. <input type="text" name="Task6_6" id="q6_6" placeholder="..."> is Spanish. (Girl) <span class="icon">💃</span></p>
+            <p>7. <input type="text" name="Task6_7" id="q6_7" placeholder="..."> are a student. <span class="icon">🎓</span></p>
+            
+            <button type="button" class="check-btn" onclick="checkTask6()">Check Task 6</button>
+            <span id="res6" class="result-msg"></span>
+        </div>
+
+        <!-- ================= TASK 7 ================= -->
+        <div class="task" style="border-left-color: #2ecc71;">
+            <h3>7. Unscramble the sentences</h3>
+            <p>Click words from the orange box to build the sentence.</p>
+            <input type="hidden" name="Task7_1" id="in_t7_1"><input type="hidden" name="Task7_2" id="in_t7_2"><input type="hidden" name="Task7_3" id="in_t7_3"><input type="hidden" name="Task7_4" id="in_t7_4"><input type="hidden" name="Task7_5" id="in_t7_5"><input type="hidden" name="Task7_6" id="in_t7_6"><input type="hidden" name="Task7_7" id="in_t7_7">
+
+            <div class="unscramble-container" data-answer="I am from Spain">
+                <p>1.</p>
+                <div class="sentence-area" id="ans-7-1"></div>
+                <div class="word-bank" id="bank-7-1">
+                    <div class="word-chip" onclick="moveWord7(this, '7_1')">am</div>
+                    <div class="word-chip" onclick="moveWord7(this, '7_1')">I</div>
+                    <div class="word-chip" onclick="moveWord7(this, '7_1')">from</div>
+                    <div class="word-chip" onclick="moveWord7(this, '7_1')">Spain</div>
+                </div>
+            </div>
+
+            <div class="unscramble-container" data-answer="She is Italian">
+                <p>2.</p>
+                <div class="sentence-area" id="ans-7-2"></div>
+                <div class="word-bank" id="bank-7-2">
+                    <div class="word-chip" onclick="moveWord7(this, '7_2')">is</div>
+                    <div class="word-chip" onclick="moveWord7(this, '7_2')">She</div>
+                    <div class="word-chip" onclick="moveWord7(this, '7_2')">Italian</div>
+                </div>
+            </div>
+
+            <div class="unscramble-container" data-answer="Are you British">
+                <p>3.</p>
+                <div class="sentence-area" id="ans-7-3"></div>
+                <div class="word-bank" id="bank-7-3">
+                    <div class="word-chip" onclick="moveWord7(this, '7_3')">you</div>
+                    <div class="word-chip" onclick="moveWord7(this, '7_3')">Are</div>
+                    <div class="word-chip" onclick="moveWord7(this, '7_3')">British</div>
+                </div>
+            </div>
+
+            <div class="unscramble-container" data-answer="I am not American">
+                <p>4.</p>
+                <div class="sentence-area" id="ans-7-4"></div>
+                <div class="word-bank" id="bank-7-4">
+                    <div class="word-chip" onclick="moveWord7(this, '7_4')">not</div>
+                    <div class="word-chip" onclick="moveWord7(this, '7_4')">I</div>
+                    <div class="word-chip" onclick="moveWord7(this, '7_4')">am</div>
+                    <div class="word-chip" onclick="moveWord7(this, '7_4')">American</div>
+                </div>
+            </div>
+
+            <div class="unscramble-container" data-answer="It is a passport">
+                <p>5.</p>
+                <div class="sentence-area" id="ans-7-5"></div>
+                <div class="word-bank" id="bank-7-5">
+                    <div class="word-chip" onclick="moveWord7(this, '7_5')">a</div>
+                    <div class="word-chip" onclick="moveWord7(this, '7_5')">is</div>
+                    <div class="word-chip" onclick="moveWord7(this, '7_5')">It</div>
+                    <div class="word-chip" onclick="moveWord7(this, '7_5')">passport</div>
+                </div>
+            </div>
+
+            <div class="unscramble-container" data-answer="He is from Japan">
+                <p>6.</p>
+                <div class="sentence-area" id="ans-7-6"></div>
+                <div class="word-bank" id="bank-7-6">
+                    <div class="word-chip" onclick="moveWord7(this, '7_6')">from</div>
+                    <div class="word-chip" onclick="moveWord7(this, '7_6')">He</div>
+                    <div class="word-chip" onclick="moveWord7(this, '7_6')">is</div>
+                    <div class="word-chip" onclick="moveWord7(this, '7_6')">Japan</div>
+                </div>
+            </div>
+
+            <div class="unscramble-container" data-answer="You are a student">
+                <p>7.</p>
+                <div class="sentence-area" id="ans-7-7"></div>
+                <div class="word-bank" id="bank-7-7">
+                    <div class="word-chip" onclick="moveWord7(this, '7_7')">student</div>
+                    <div class="word-chip" onclick="moveWord7(this, '7_7')">a</div>
+                    <div class="word-chip" onclick="moveWord7(this, '7_7')">You</div>
+                    <div class="word-chip" onclick="moveWord7(this, '7_7')">are</div>
+                </div>
+            </div>
+            
+            <button type="button" class="check-btn" onclick="checkTask7()">Check Task 7</button>
+            <span id="res7" class="result-msg"></span>
+        </div>
+
+        <!-- ================= TASK 8 ================= -->
+        <div class="task" style="border-left-color: #34495e;">
+            <h3>8. Choose the correct verb (want / have / like)</h3>
+            <input type="hidden" name="Task8_1" id="in_t8_1"><input type="hidden" name="Task8_2" id="in_t8_2"><input type="hidden" name="Task8_3" id="in_t8_3"><input type="hidden" name="Task8_4" id="in_t8_4"><input type="hidden" name="Task8_5" id="in_t8_5"><input type="hidden" name="Task8_6" id="in_t8_6"><input type="hidden" name="Task8_7" id="in_t8_7">
+
+            <p>1. I <span id="span8_1">___</span> to go to France. <span class="icon">🥖</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t8_1','want',this)">want</button><button type="button" class="choice-btn" onclick="checkChoice('t8_1','have',this)">have</button><button type="button" class="choice-btn" onclick="checkChoice('t8_1','like',this)">like</button></p>
+
+            <p>2. I <span id="span8_2">___</span> a passport. <span class="icon">🛂</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t8_2','want',this)">want</button><button type="button" class="choice-btn" onclick="checkChoice('t8_2','have',this)">have</button><button type="button" class="choice-btn" onclick="checkChoice('t8_2','like',this)">like</button></p>
+
+            <p>3. I <span id="span8_3">___</span> to try Italian pizza. <span class="icon">🍕</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t8_3','want',this)">want</button><button type="button" class="choice-btn" onclick="checkChoice('t8_3','have',this)">have</button><button type="button" class="choice-btn" onclick="checkChoice('t8_3','like',this)">like</button></p>
+
+            <p>4. I <span id="span8_4">___</span> to go to a park in London. <span class="icon">🌳</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t8_4','want',this)">want</button><button type="button" class="choice-btn" onclick="checkChoice('t8_4','have',this)">have</button><button type="button" class="choice-btn" onclick="checkChoice('t8_4','like',this)">like</button></p>
+
+            <p>5. I <span id="span8_5">___</span> a camera. <span class="icon">📸</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t8_5','want',this)">want</button><button type="button" class="choice-btn" onclick="checkChoice('t8_5','have',this)">have</button><button type="button" class="choice-btn" onclick="checkChoice('t8_5','like',this)">like</button></p>
+
+            <p>6. I <span id="span8_6">___</span> to try Japanese candy. <span class="icon">🍬</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t8_6','want',this)">want</button><button type="button" class="choice-btn" onclick="checkChoice('t8_6','have',this)">have</button><button type="button" class="choice-btn" onclick="checkChoice('t8_6','like',this)">like</button></p>
+
+            <p>7. I <span id="span8_7">___</span> to go to a restaurant in Mexico. <span class="icon">🌮</span>
+            <br><button type="button" class="choice-btn" onclick="checkChoice('t8_7','want',this)">want</button><button type="button" class="choice-btn" onclick="checkChoice('t8_7','have',this)">have</button><button type="button" class="choice-btn" onclick="checkChoice('t8_7','like',this)">like</button></p>
+            
+            <button type="button" class="check-btn" onclick="checkTask8()">Check Task 8</button>
+            <span id="res8" class="result-msg"></span>
+        </div>
+
+        <!-- ================= TASK 9 ================= -->
+        <div class="task" style="border-left-color: #f1c40f;">
+            <h3>9. Reading: True or False?</h3>
+            <div style="background: #fff; padding: 15px; border: 2px solid #f1c40f; border-radius: 8px; margin-bottom: 15px;">
+                <p>Hi! I am Anna. I am from Germany. <span class="icon">🥨</span> I am not British. I have a passport and a camera. 📸 I want to go to Spain. <span class="icon">💃</span> I like to try Spanish food. My friend Kenji is from Japan. <span class="icon">🍣</span> He is a student. 🎓</p>
+            </div>
+            <p>1. Anna is from Germany. 
+                <select name="Task9_1" id="s9_1">
+                    <option value="">--</option><option value="True">True</option><option value="False">False</option>
+                </select></p>
+            <p>2. Anna is British. 
+                <select name="Task9_2" id="s9_2">
+                    <option value="">--</option><option value="True">True</option><option value="False">False</option>
+                </select></p>
+            <p>3. She has a camera. 
+                <select name="Task9_3" id="s9_3">
+                    <option value="">--</option><option value="True">True</option><option value="False">False</option>
+                </select></p>
+            <p>4. She wants to go to Japan. 
+                <select name="Task9_4" id="s9_4">
+                    <option value="">--</option><option value="True">True</option><option value="False">False</option>
+                </select></p>
+            <p>5. Kenji is from Japan. 
+                <select name="Task9_5" id="s9_5">
+                    <option value="">--</option><option value="True">True</option><option value="False">False</option>
+                </select></p>
+            <p>6. Kenji is a student. 
+                <select name="Task9_6" id="s9_6">
+                    <option value="">--</option><option value="True">True</option><option value="False">False</option>
+                </select></p>
+            <p>7. Anna likes to try Spanish food. 
+                <select name="Task9_7" id="s9_7">
+                    <option value="">--</option><option value="True">True</option><option value="False">False</option>
+                </select></p>
+                
+            <button type="button" class="check-btn" onclick="checkTask9()">Check Task 9</button>
+            <span id="res9" class="result-msg"></span>
+        </div>
+
+        <!-- ================= TASK 10 ================= -->
+        <div class="task" style="border-left-color: #8e44ad;">
+            <h3>10. Listening: Type the nationality</h3>
+            <p>1. <button type="button" class="audio-btn" onclick="speak('British')">🔊</button> ➔ <input type="text" name="Task10_1" id="q10_1" placeholder="..."></p>
+            <p>2. <button type="button" class="audio-btn" onclick="speak('Japanese')">🔊</button> ➔ <input type="text" name="Task10_2" id="q10_2" placeholder="..."></p>
+            <p>3. <button type="button" class="audio-btn" onclick="speak('Mexican')">🔊</button> ➔ <input type="text" name="Task10_3" id="q10_3" placeholder="..."></p>
+            <p>4. <button type="button" class="audio-btn" onclick="speak('Italian')">🔊</button> ➔ <input type="text" name="Task10_4" id="q10_4" placeholder="..."></p>
+            <p>5. <button type="button" class="audio-btn" onclick="speak('French')">🔊</button> ➔ <input type="text" name="Task10_5" id="q10_5" placeholder="..."></p>
+            <p>6. <button type="button" class="audio-btn" onclick="speak('Spanish')">🔊</button> ➔ <input type="text" name="Task10_6" id="q10_6" placeholder="..."></p>
+            <p>7. <button type="button" class="audio-btn" onclick="speak('American')">🔊</button> ➔ <input type="text" name="Task10_7" id="q10_7" placeholder="..."></p>
+            
+            <button type="button" class="check-btn" onclick="checkTask10()">Check Task 10</button>
+            <span id="res10" class="result-msg"></span>
+        </div>
+
+        <!-- ================= TASK 11 ================= -->
+        <div class="task" style="border-left-color: #e84393;">
+            <h3>11. Listening Dictation ✍️</h3>
+            <p>Click the speaker 🔊 and type the sentence you hear.</p>
+            
+            <p>1. <button type="button" class="audio-btn" onclick="speak('I am from Italy')">🔊</button> <br>
+            <input type="text" name="Task11_1" id="q11_1" style="width: 80%; text-align: left;" placeholder="Type the sentence here..."></p>
+            
+            <p>2. <button type="button" class="audio-btn" onclick="speak('You are not British')">🔊</button> <br>
+            <input type="text" name="Task11_2" id="q11_2" style="width: 80%; text-align: left;" placeholder="Type the sentence here..."></p>
+            
+            <p>3. <button type="button" class="audio-btn" onclick="speak('He is from Japan')">🔊</button> <br>
+            <input type="text" name="Task11_3" id="q11_3" style="width: 80%; text-align: left;" placeholder="Type the sentence here..."></p>
+            
+            <p>4. <button type="button" class="audio-btn" onclick="speak('Is she a student?')">🔊</button> <br>
+            <input type="text" name="Task11_4" id="q11_4" style="width: 80%; text-align: left;" placeholder="Type the sentence here..."></p>
+            
+            <p>5. <button type="button" class="audio-btn" onclick="speak('I want to go to a park')">🔊</button> <br>
+            <input type="text" name="Task11_5" id="q11_5" style="width: 80%; text-align: left;" placeholder="Type the sentence here..."></p>
+            
+            <p>6. <button type="button" class="audio-btn" onclick="speak('I have a camera')">🔊</button> <br>
+            <input type="text" name="Task11_6" id="q11_6" style="width: 80%; text-align: left;" placeholder="Type the sentence here..."></p>
+            
+            <p>7. <button type="button" class="audio-btn" onclick="speak('It is a passport')">🔊</button> <br>
+            <input type="text" name="Task11_7" id="q11_7" style="width: 80%; text-align: left;" placeholder="Type the sentence here..."></p>
+            
+            <button type="button" class="check-btn" onclick="checkTask11()">Check Task 11</button>
+            <span id="res11" class="result-msg"></span>
+        </div>
+
+        <br>
+        <!-- Кнопка отправки -->
+        <button type="submit" class="submit-btn">🚀 Submit Homework</button>
+        <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-top: 15px;">Your answers will be sent to your teacher.</p>
+    </form>
+
+</div>
+
+<script>
+    // --- Озвучка ---
+    function speak(text) {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            let msg = new SpeechSynthesisUtterance(text);
+            msg.lang = 'en-US';
+            msg.rate = 0.85;
+            window.speechSynthesis.speak(msg);
+        }
+    }
+
+    // --- Выбор варианта (Tasks 1, 2, 3, 8) ---
+    function checkChoice(taskId, answer, btn) {
+        let parent = btn.parentElement;
+        let buttons = parent.querySelectorAll('.choice-btn');
+        
+        // Сброс визуала только для текущего вопроса
+        buttons.forEach(b => {
+            b.classList.remove('correct', 'wrong');
+            b.style.borderColor = "#bdc3c7";
+            b.style.background = "#fff";
+            b.style.color = "#333";
+        });
+
+        // Записываем выбор в скрытый инпут (для отправки)
+        let hiddenInput = document.getElementById('in_' + taskId);
+        if (hiddenInput) {
+            hiddenInput.value = answer;
+        }
+        
+        // Визуальная проверка (мы не можем сразу знать, правильно ли, пока не нажата кнопка Check Task,
+        // но для удобства оставим просто выделение выбранного цвета, чтобы ученик видел свой выбор)
+        btn.style.borderColor = "#3498db";
+        btn.style.background = "#eaf2f8";
+    }
+
+    // --- Игра на соединение (Task 5) ---
+    let selectedLeft5 = null;
+    let selectedRight5 = null;
+    let matches5 = 0;
+
+    function selectItem5(el, side) {
+        if (el.classList.contains('matched')) return;
+
+        if (side === 'left') {
+            if (selectedLeft5) selectedLeft5.classList.remove('selected');
+            selectedLeft5 = el;
+            selectedLeft5.classList.add('selected');
+        } else {
+            if (selectedRight5) selectedRight5.classList.remove('selected');
+            selectedRight5 = el;
+            selectedRight5.classList.add('selected');
+        }
+
+        if (selectedLeft5 && selectedRight5) {
+            let idLeft = selectedLeft5.getAttribute('data-id');
+            let idRight = selectedRight5.getAttribute('data-id');
+
+            if (idLeft === idRight) {
+                selectedLeft5.classList.remove('selected');
+                selectedRight5.classList.remove('selected');
+                selectedLeft5.classList.add('matched');
+                selectedRight5.classList.add('matched');
+                matches5++;
+                
+                document.getElementById('in_t5').value = matches5 + "/7 Matched";
+
+                selectedLeft5 = null;
+                selectedRight5 = null;
+            } else {
+                let tempL = selectedLeft5;
+                let tempR = selectedRight5;
+                tempL.classList.add('error');
+                tempR.classList.add('error');
+                setTimeout(() => {
+                    tempL.classList.remove('selected', 'error');
+                    tempR.classList.remove('selected', 'error');
+                }, 600);
+                selectedLeft5 = null;
+                selectedRight5 = null;
+            }
+        }
+    }
+
+    // --- Unscramble (Task 7) ---
+    function moveWord7(el, taskId) {
+        let ansArea = document.getElementById('ans-' + taskId.replace('_', '-'));
+        let bankArea = document.getElementById('bank-' + taskId.replace('_', '-'));
+        let hiddenInput = document.getElementById('in_t' + taskId);
+        
+        if (el.parentElement === bankArea) {
+            ansArea.appendChild(el);
+            el.classList.add('placed');
+        } else {
+            bankArea.appendChild(el);
+            el.classList.remove('placed');
+        }
+
+        let words = Array.from(ansArea.children).map(w => w.innerText);
+        hiddenInput.value = words.join(' ');
+    }
+
+    // ==========================================
+    // --- ФУНКЦИИ ПРОВЕРКИ (CHECK ANSWERS) ---
+    // ==========================================
+
+    function showResult(id, correct, total) {
+        let el = document.getElementById(id);
+        if (correct === total) {
+            el.innerHTML = `✅ ${correct}/${total} Perfect!`;
+            el.style.color = "#27ae60";
+        } else {
+            el.innerHTML = `❌ ${correct}/${total} Try again!`;
+            el.style.color = "#e74c3c";
+        }
+    }
+
+    // Task 1
+    function checkTask1() {
+        const ans = ['am', 'are', 'is', 'is', 'is', 'is', 'are'];
+        let score = 0;
+        for(let i=1; i<=7; i++) {
+            let val = document.getElementById('in_t1_'+i).value.toLowerCase();
+            if(val === ans[i-1]) score++;
+        }
+        showResult('res1', score, 7);
+    }
+
+    // Task 2
+    function checkTask2() {
+        const ans = ['am not', 'aren\'t', 'isn\'t', 'isn\'t', 'isn\'t', 'aren\'t', 'am not'];
+        let score = 0;
+        for(let i=1; i<=7; i++) {
+            let val = document.getElementById('in_t2_'+i).value.toLowerCase().replace('are not', 'aren\'t').replace('is not', 'isn\'t');
+            if(val === ans[i-1]) score++;
+        }
+        showResult('res2', score, 7);
+    }
+
+    // Task 3
+    function checkTask3() {
+        const ans = ['are', 'is', 'is', 'am', 'is', 'are', 'is'];
+        let score = 0;
+        for(let i=1; i<=7; i++) {
+            let val = document.getElementById('in_t3_'+i).value.toLowerCase();
+            if(val === ans[i-1]) score++;
+        }
+        showResult('res3', score, 7);
+    }
+
+    // Task 4
+    function checkTask4() {
+        const ans = ["i'm", "you're", "he's", "she isn't", "it's", "you aren't", "i'm not"];
+        let score = 0;
+        for(let i=1; i<=7; i++) {
+            let input = document.getElementById('q4_'+i);
+            let val = input.value.trim().toLowerCase().replace('’', "'").replace("she's not", "she isn't").replace("you're not", "you aren't").replace("i am not", "i'm not").replace("i am", "i'm").replace("you are", "you're").replace("he is", "he's").replace("it is", "it's").replace("you are not", "you aren't");
+            
+            input.classList.remove('input-correct', 'input-wrong');
+            if (val === ans[i-1] || val === ans[i-1].replace("isn't", "is not").replace("aren't", "are not")) {
+                score++;
+                input.classList.add('input-correct');
+            } else {
+                input.classList.add('input-wrong');
+            }
+        }
+        showResult('res4', score, 7);
+    }
+
+    // Task 5
+    function checkTask5() {
+        if (matches5 === 7) {
+            document.getElementById('res5').innerHTML = `✅ 7/7 Perfect!`;
+            document.getElementById('res5').style.color = "#27ae60";
+        } else {
+            document.getElementById('res5').innerHTML = `❌ ${matches5}/7 Keep matching!`;
+            document.getElementById('res5').style.color = "#e74c3c";
+        }
+    }
+
+    // Task 6
+    function checkTask6() {
+        const ans = ['i', 'he', 'you', 'it', 'i', 'she', 'you'];
+        let score = 0;
+        for(let i=1; i<=7; i++) {
+            let input = document.getElementById('q6_'+i);
+            let val = input.value.trim().toLowerCase();
+            
+            input.classList.remove('input-correct', 'input-wrong');
+            if(val === ans[i-1]) {
+                score++;
+                input.classList.add('input-correct');
+            } else {
+                input.classList.add('input-wrong');
+            }
+        }
+        showResult('res6', score, 7);
+    }
+
+    // Task 7
+    function checkTask7() {
+        let score = 0;
+        for(let i=1; i<=7; i++) {
+            let ansArea = document.getElementById('ans-7-'+i);
+            let target = ansArea.closest('.unscramble-container').getAttribute('data-answer').toLowerCase();
+            let userAns = Array.from(ansArea.children).map(w => w.innerText).join(' ').toLowerCase();
+            
+            ansArea.classList.remove('area-correct', 'area-wrong');
+            if(userAns === target) {
+                score++;
+                ansArea.classList.add('area-correct');
+            } else {
+                ansArea.classList.add('area-wrong');
+            }
+        }
+        showResult('res7', score, 7);
+    }
+
+    // Task 8
+    function checkTask8() {
+        const ans = ['want', 'have', 'want', 'like', 'have', 'want', 'like'];
+        let score = 0;
+        for(let i=1; i<=7; i++) {
+            let val = document.getElementById('in_t8_'+i).value.toLowerCase();
+            if(val === ans[i-1]) score++;
+        }
+        showResult('res8', score, 7);
+    }
+
+    // Task 9
+    function checkTask9() {
+        const ans = ['True', 'False', 'True', 'False', 'True', 'True', 'True'];
+        let score = 0;
+        for(let i=1; i<=7; i++) {
+            let select = document.getElementById('s9_'+i);
+            let val = select.value;
+            
+            select.classList.remove('select-correct', 'select-wrong');
+            if(val === ans[i-1]) {
+                score++;
+                select.classList.add('select-correct');
+            } else {
+                select.classList.add('select-wrong');
+            }
+        }
+        showResult('res9', score, 7);
+    }
+
+    // Task 10
+    function checkTask10() {
+        const ans = ['british', 'japanese', 'mexican', 'italian', 'french', 'spanish', 'american'];
+        let score = 0;
+        for(let i=1; i<=7; i++) {
+            let input = document.getElementById('q10_'+i);
+            let val = input.value.trim().toLowerCase();
+            
+            input.classList.remove('input-correct', 'input-wrong');
+            if(val === ans[i-1]) {
+                score++;
+                input.classList.add('input-correct');
+            } else {
+                input.classList.add('input-wrong');
+            }
+        }
+        showResult('res10', score, 7);
+    }
+
+    // Task 11
+    function checkTask11() {
+        const ans = [
+            "i am from italy", 
+            "you are not british", 
+            "he is from japan", 
+            "is she a student", 
+            "i want to go to a park", 
+            "i have a camera", 
+            "it is a passport"
+        ];
+        let score = 0;
+        for(let i=1; i<=7; i++) {
+            let input = document.getElementById('q11_'+i);
+            // Убираем знаки препинания и лишние пробелы для проверки
+            let val = input.value.trim().toLowerCase().replace(/[.,?!]/g, '');
+            
+            input.classList.remove('input-correct', 'input-wrong');
+            if(val === ans[i-1]) {
+                score++;
+                input.classList.add('input-correct');
+            } else {
+                input.classList.add('input-wrong');
+            }
+        }
+        showResult('res11', score, 7);
+    }
+</script>
+
+</body>
+</html>
